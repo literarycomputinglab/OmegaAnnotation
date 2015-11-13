@@ -7,11 +7,10 @@ package it.cnr.ilc.lc.omega.annotation;
 
 import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
-import it.cnr.ilc.lc.omega.core.datatype.Text;
 import it.cnr.ilc.lc.omega.entity.Annotation;
-import it.cnr.ilc.lc.omega.entity.AnnotationBuilder;
 import it.cnr.ilc.lc.omega.entity.Content;
 import it.cnr.ilc.lc.omega.entity.Locus;
+import it.cnr.ilc.lc.omega.entity.Source;
 import it.cnr.ilc.lc.omega.entity.TextContent;
 import it.cnr.ilc.lc.omega.exception.InvalidURIException;
 import java.net.URI;
@@ -28,7 +27,7 @@ public class Abbreviation {
     @Part
     private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static in quanto richiamata da una new in un metodo static
 
-    private Annotation<Content, AbbreviationType> annotation;
+    private Annotation<TextContent, AbbreviationType> annotation;
 
     private <T extends Content> Abbreviation(Locus<T> locus, String expansion, URI uri) throws ManagerAction.ActionException {
 
@@ -50,23 +49,37 @@ public class Abbreviation {
     private <T extends Content> void init(Locus<T> locus, String expansion, URI uri) throws ManagerAction.ActionException {
         System.err.println("Abbreviation init() " + resourceManager);
         AbbreviationBuilder ab = new AbbreviationBuilder().abbrevationExpansion(expansion).abbrevation("testo della abbreviazione");
-
+        ab.setURI(uri); //non e' concatenabile, perche'?
+        annotation = resourceManager.createAnnotation(AbbreviationType.class, ab);
     }
 
-    public static Locus<TextContent> createLocus(int start, int end) throws ManagerAction.ActionException {
+    /**
+     * ATTENZIONE: start e end su una generica source ha senso solo se testo!
+     * start e end vanno sostituiti con una struttura piu' generica che
+     * rappresenti i POI (es. WKT)
+     *
+     * @param <T>
+     * @param <L>
+     * @param source
+     * @param start
+     * @param end
+     * @return
+     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException
+     */
+    public static <T extends Content, L extends Locus<T>> L createLocus(Source<T> source, int start, int end) throws ManagerAction.ActionException {
+
         try {
-            return resourceManager.createLocus(start, end);
-            
-            
+            return resourceManager.createLocus(source, start, end);
+
         } catch (InvalidURIException ex) {
             Logger.getLogger(Abbreviation.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }
 
-    public void addLocus(Text text, int start, int end) throws ManagerAction.ActionException {
+    public <T extends Content> void addLocus(Locus<T> locus) throws ManagerAction.ActionException {
 
-        resourceManager.updateTextAnnotationLocus(text.getSource(), annotation, start, end);
+        resourceManager.updateAnnotationLocus(locus, annotation);
     }
 
     public void save() throws ManagerAction.ActionException {
