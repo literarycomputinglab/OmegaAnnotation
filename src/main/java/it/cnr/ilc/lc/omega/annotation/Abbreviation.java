@@ -25,7 +25,7 @@ import sirius.kernel.di.std.Part;
  *
  * @author simone
  */
-public class Abbreviation {
+final public class Abbreviation {
 
     @Part
     private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static in quanto richiamata da una new in un metodo static
@@ -33,23 +33,30 @@ public class Abbreviation {
     private Annotation<TextContent, AbbreviationType> annotation;
 
     public static <T extends Content> Abbreviation of(String expansion) throws ManagerAction.ActionException {
-        System.err.println("Abbreviation.of");
+        System.err.println("Abbreviation.of solo expansion");
         //FIXME Aggiungere URI della annotazione
-        return new Abbreviation(expansion, URI.create("uri.create/abbreviation/" + System.currentTimeMillis()));
+        return new Abbreviation(expansion, null, URI.create("uri.create/abbreviation/" + System.currentTimeMillis()));
     }
 
     public static <T extends Content> Abbreviation of(String expansion, URI uri) throws ManagerAction.ActionException {
-        System.err.println("Abbreviation.of");
+        System.err.println("Abbreviation.of con URI");
         //FIXME Aggiungere URI della annotazione
-        return new Abbreviation(expansion, uri);
+        return new Abbreviation(expansion, null, uri);
+    }
+    
+    // per autocorrelazione tra i generici:  L extends Locus<T>
+     public static <T extends Content, L extends Locus<T>> Abbreviation of(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
+        System.err.println("Abbreviation.of con locus");
+        //FIXME Aggiungere URI della annotazione
+        return new Abbreviation(expansion, locus, uri);
     }
 
-    private <T extends Content> Abbreviation(String expansion, URI uri) throws ManagerAction.ActionException {
+    private <T extends Content, L extends Locus<T>> Abbreviation(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
 
-        init(expansion, uri);
+        init(expansion, locus, uri);
     }
 
-    private <T extends Content> void init(String expansion, URI uri) throws ManagerAction.ActionException {
+    private <T extends Content, L extends Locus<T>> void init(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
         System.err.println("Abbreviation init() " + resourceManager);
         AbbreviationBuilder ab = new AbbreviationBuilder().abbrevationExpansion(expansion).abbrevation("testo della abbreviazione");
         ab.setURI(uri); //non e' concatenabile, perche'?
