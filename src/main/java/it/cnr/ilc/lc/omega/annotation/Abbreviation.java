@@ -28,7 +28,7 @@ import sirius.kernel.di.std.Part;
 public class Abbreviation {
 
     @Part
-    private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static in quanto richiamata da una new in un metodo static
+    private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static
 
     private Annotation<TextContent, AbbreviationType> annotation;
 
