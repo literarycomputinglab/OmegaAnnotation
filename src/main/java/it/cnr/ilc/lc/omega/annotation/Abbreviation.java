@@ -103,8 +103,14 @@ public class Abbreviation {
     }
 
     public void save() throws ManagerAction.ActionException {
-
+        // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
     }
+    
+    //TODO: valutare inserimento anche metodi remove
+    /**
+     * resourceManager.removeAnnotaion(annotation);
+     * annotation = null; // se mettiamo la remove bisogna controllare in ogni metodo la validità dell'istanza (l'integrità). 
+     */
 
 }
