@@ -15,7 +15,7 @@
                      
         <dependency>
             <groupId>it.cnr.ilc.lc</groupId>
-            <artifactId>OmegaEntityNeo4j</artifactId>
+            <artifactId>OmegaEntityHibernateSearch</artifactId>
             <version>1.0.0</version>
         </dependency>
  

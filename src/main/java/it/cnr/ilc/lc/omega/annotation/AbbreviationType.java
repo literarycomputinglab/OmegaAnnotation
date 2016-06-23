@@ -34,5 +34,10 @@ public class AbbreviationType extends Annotation.Data {
     public void setAbbrevation(String abbrevation) {
         this.abbrevation = abbrevation;
     }
+
+    @Override
+    public <E extends Annotation.Data> E get() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
