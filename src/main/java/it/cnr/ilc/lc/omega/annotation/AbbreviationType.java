@@ -11,7 +11,7 @@ import it.cnr.ilc.lc.omega.entity.Annotation;
  *
  * @author simone
  */
-public class AbbreviationType extends Annotation.Type {
+public class AbbreviationType extends Annotation.Data {
     
     //abbreviazione sciolta
     private String abbrevationExpansion;
