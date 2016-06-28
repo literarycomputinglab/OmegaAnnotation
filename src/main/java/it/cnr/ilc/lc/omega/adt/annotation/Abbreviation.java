@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.cnr.ilc.lc.omega.annotation;
+package it.cnr.ilc.lc.omega.adt.annotation;
 
+import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotation;
+import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
 import it.cnr.ilc.lc.omega.entity.Annotation;
@@ -30,7 +32,7 @@ final public class Abbreviation {
     @Part
     private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static
 
-    private Annotation<TextContent, AbbreviationType> annotation;
+    private Annotation<TextContent, AbbreviationAnnotation> annotation;
 
     public static <T extends Content> Abbreviation of(String expansion) throws ManagerAction.ActionException {
         System.err.println("Abbreviation.of solo expansion");
@@ -58,9 +60,9 @@ final public class Abbreviation {
 
     private <T extends Content, L extends Locus<T>> void init(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
         System.err.println("Abbreviation init() " + resourceManager);
-        AbbreviationBuilder ab = new AbbreviationBuilder().abbrevationExpansion(expansion).abbrevation("testo della abbreviazione");
+        AbbreviationAnnotationBuilder ab = new AbbreviationAnnotationBuilder().abbrevationExpansion(expansion).abbrevation("testo della abbreviazione");
         ab.setURI(uri); //non e' concatenabile, perche'?
-        annotation = resourceManager.createAnnotation(AbbreviationType.class, ab);
+        annotation = resourceManager.createAnnotation(AbbreviationAnnotation.class, ab);
 
     }
 

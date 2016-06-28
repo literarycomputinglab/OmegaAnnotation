@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.cnr.ilc.lc.omega.annotation;
+package it.cnr.ilc.lc.omega.adt.annotation;
 
+import it.cnr.ilc.lc.omega.annotation.BaseAnnotation;
+import it.cnr.ilc.lc.omega.annotation.BaseAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
 import it.cnr.ilc.lc.omega.core.datatype.Text;
@@ -25,7 +27,7 @@ public class BaseAnnotationText {
 
     private static final Logger log = LogManager.getLogger(BaseAnnotationText.class);
 
-    private Annotation<TextContent, BaseAnnotationType> annotation;
+    private Annotation<TextContent, BaseAnnotation> annotation;
 
     @Part
     private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static in quanto richiamata da una new in un metodo static
@@ -43,9 +45,9 @@ public class BaseAnnotationText {
 
     private void init(String text, URI uri) throws ManagerAction.ActionException {
         log.info("BaseAnnotationText init() resourceManager=(" + resourceManager + ")");
-        BaseAnnBuilder bab = new BaseAnnBuilder().URI(uri).text(text);
+        BaseAnnotationBuilder bab = new BaseAnnotationBuilder().URI(uri).text(text);
         annotation = resourceManager.createAnnotation(
-                BaseAnnotationType.class, bab);
+                BaseAnnotation.class, bab);
     }
 
     public void addLocus(Text text, int start, int end) throws ManagerAction.ActionException, InvalidURIException {
