@@ -19,8 +19,8 @@ import it.cnr.ilc.lc.omega.entity.TextContent;
 import it.cnr.ilc.lc.omega.entity.TextLocus;
 import it.cnr.ilc.lc.omega.exception.InvalidURIException;
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sirius.kernel.di.std.Part;
 
 /**
@@ -28,6 +28,8 @@ import sirius.kernel.di.std.Part;
  * @author simone
  */
 final public class Abbreviation {
+
+    private static final Logger log = LogManager.getLogger(Abbreviation.class);
 
     @Part
     private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static
@@ -37,31 +39,34 @@ final public class Abbreviation {
     public static <T extends Content> Abbreviation of(String expansion) throws ManagerAction.ActionException {
         System.err.println("Abbreviation.of solo expansion");
         //FIXME Aggiungere URI della annotazione
-        return new Abbreviation(expansion, null, URI.create("uri.create/abbreviation/" + System.currentTimeMillis()));
+        return new Abbreviation(expansion, URI.create("uri.create/abbreviation/" + System.currentTimeMillis()));
     }
 
     public static <T extends Content> Abbreviation of(String expansion, URI uri) throws ManagerAction.ActionException {
         System.err.println("Abbreviation.of con URI");
         //FIXME Aggiungere URI della annotazione
-        return new Abbreviation(expansion, null, uri);
+        return new Abbreviation(expansion, uri);
     }
-    
+
     // per autocorrelazione tra i generici:  L extends Locus<T>
-     public static <T extends Content, L extends Locus<T>> Abbreviation of(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
+    public static <T extends Content, L extends Locus<T>> Abbreviation of(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
         System.err.println("Abbreviation.of con locus");
         //FIXME Aggiungere URI della annotazione
-        return new Abbreviation(expansion, locus, uri);
+        return new Abbreviation(expansion, uri);
     }
 
-    private <T extends Content, L extends Locus<T>> Abbreviation(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
+    private <T extends Content, L extends Locus<T>> Abbreviation(String expansion, URI uri) throws ManagerAction.ActionException {
 
-        init(expansion, locus, uri);
+        init(expansion, uri);
     }
 
-    private <T extends Content, L extends Locus<T>> void init(String expansion, L locus, URI uri) throws ManagerAction.ActionException {
+    private <T extends Content, L extends Locus<T>> void init(String expansion, URI uri) throws ManagerAction.ActionException {
         System.err.println("Abbreviation init() " + resourceManager);
-        AbbreviationAnnotationBuilder ab = new AbbreviationAnnotationBuilder().abbrevationExpansion(expansion).abbrevation("testo della abbreviazione");
-        ab.setURI(uri); //non e' concatenabile, perche'?
+        AbbreviationAnnotationBuilder ab = new AbbreviationAnnotationBuilder()
+                .abbrevationExpansion(expansion)
+                .abbrevation("testo della abbreviazione")
+                .URI(uri);
+
         annotation = resourceManager.createAnnotation(AbbreviationAnnotation.class, ab);
 
     }
@@ -85,7 +90,7 @@ final public class Abbreviation {
             return resourceManager.createLocus(source, start, end, TextContent.class);
 
         } catch (InvalidURIException ex) {
-            Logger.getLogger(Abbreviation.class.getName()).log(Level.INFO, null, ex);
+            log.error("Creating TextLocus", ex);
         }
         return null;
     }
@@ -96,7 +101,7 @@ final public class Abbreviation {
             return resourceManager.createLocus(source, WKT, WKT2, ImageContent.class);
 
         } catch (InvalidURIException ex) {
-            Logger.getLogger(Abbreviation.class.getName()).log(Level.INFO, null, ex);
+            log.error("Creating ImageLocus",ex);
         }
         return null;
     }
@@ -115,11 +120,11 @@ final public class Abbreviation {
         // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
     }
-    
+
     //TODO: valutare inserimento anche metodi remove
     /**
-     * resourceManager.removeAnnotaion(annotation);
-     * annotation = null; // se mettiamo la remove bisogna controllare in ogni metodo la validità dell'istanza (l'integrità). 
+     * resourceManager.removeAnnotaion(annotation); annotation = null; // se
+     * mettiamo la remove bisogna controllare in ogni metodo la validità
+     * dell'istanza (l'integrità).
      */
-
 }
