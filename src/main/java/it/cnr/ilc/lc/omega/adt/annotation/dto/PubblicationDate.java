@@ -11,15 +11,11 @@ import java.util.Date;
  *
  * @author simone
  */
-public class PubblicationDate implements DTOValue<Date, PubblicationDate>{
+public final class PubblicationDate implements DTOValue<Date>{
 
     Date pubblicationDate;
 
-    private PubblicationDate() {
-    }
-    
-    public static PubblicationDate instantiate() {
-        return new PubblicationDate();
+    PubblicationDate() {
     }
 
     @Override
@@ -28,8 +24,10 @@ public class PubblicationDate implements DTOValue<Date, PubblicationDate>{
     }
 
     @Override
-    public void withValue(Date t) {
+    public <K extends DTOValue<Date>> K withValue(Date t) {
         this.pubblicationDate = t;
+        return (K) this;
     }
+    
     
 }

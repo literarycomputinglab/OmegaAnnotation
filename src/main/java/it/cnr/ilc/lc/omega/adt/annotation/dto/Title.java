@@ -9,16 +9,13 @@ package it.cnr.ilc.lc.omega.adt.annotation.dto;
  *
  * @author simone
  */
-public class Title implements DTOValue<String, Title>{
+public final class Title implements DTOValue<String>{
     
     String title;
 
-    private Title() {
+    Title() {
     }
         
-    public Title instantiate() {
-        return new Title();
-    }
     
     @Override
     public String getValue() {
@@ -26,8 +23,9 @@ public class Title implements DTOValue<String, Title>{
     }
 
     @Override
-    public void withValue(String t) {
-        title = t;
+    public <K extends DTOValue<String>> K withValue(String t) {
+        this.title = t;
+        return (K) this;
     }
             
     

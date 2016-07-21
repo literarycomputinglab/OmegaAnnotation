@@ -11,15 +11,14 @@ package it.cnr.ilc.lc.omega.adt.annotation.dto;
  * @param <T>
  * @param <K>
  */
-public interface DTOValue<T, K extends DTOValue> {
+public interface DTOValue<T> {
 
-    static public <K> K instantiate() throws IllegalAccessException {
-        throw new IllegalAccessException();
+    static public <T,K extends DTOValue<T>> K instantiate(Class<K> clazz) throws InstantiationException, IllegalAccessException {
+        return clazz.newInstance();
     }
 
-    
     abstract T getValue();
 
-    abstract void withValue(T t);
+    abstract <K extends DTOValue<T>> K withValue(T t);
 
 }

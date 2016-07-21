@@ -5,8 +5,12 @@
  */
 package it.cnr.ilc.lc.omega.adt.annotation;
 
+import it.cnr.ilc.lc.omega.adt.annotation.dto.Authors;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.Loci;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.PubblicationDate;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.SegmentOfInterest;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.Title;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.WorkSource;
 import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotation;
 import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotationBuilder;
 import it.cnr.ilc.lc.omega.annotation.structural.WorkAnnotation;
@@ -23,6 +27,7 @@ import it.cnr.ilc.lc.omega.entity.TextContent;
 import it.cnr.ilc.lc.omega.entity.TextLocus;
 import it.cnr.ilc.lc.omega.exception.InvalidURIException;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,18 +46,19 @@ public class Work {
 
     private Annotation<TextContent, WorkAnnotation> annotation;
 
-    private Work(String annotationAuthor, String[] authors, Date creationDate, 
+    private Work(String annotationAuthor, String[] authors, Date creationDate,
             String info, PubblicationDate pubblicationDate, Title title,
-            URI uri) throws ManagerAction.ActionException  {
+            URI uri) throws ManagerAction.ActionException {
 
-        init(annotationAuthor,authors, creationDate, info, pubblicationDate, title, uri);
+        init(annotationAuthor, authors, creationDate, info, pubblicationDate, title, uri);
     }
 
-    public static Work of(PubblicationDate pubblicationDate, Title title, URI uri) throws ManagerAction.ActionException {
-        
-        return new Work (null, null,null,null, pubblicationDate, title, uri);
+    public static Work of(Authors authors, PubblicationDate pubblicationDate, Title title, URI uri) throws ManagerAction.ActionException {
+        log.info("of=(" + authors + " " + pubblicationDate + " " + title + " " + uri + ")");
+
+        return new Work("user0", authors.getValue().toArray(new String[0]), Date.from(new Date().toInstant()), "", pubblicationDate, title, uri);
     }
-    
+
     private <T extends Content, L extends Locus<T>> void init(String annotationAuthor,
             String[] authors, Date creationDate, String info, PubblicationDate pubblicationDate, Title title,
             URI uri) throws ManagerAction.ActionException {
@@ -67,6 +73,7 @@ public class Work {
                 .title(title.getValue())
                 .URI(uri);
 
+        log.info(wab.toString());
         annotation = resourceManager.createAnnotation(WorkAnnotation.class, wab);
 
     }
@@ -82,7 +89,17 @@ public class Work {
         return null;
     }
 
-    public <V extends Content> void addLocus(Locus<V> locus) throws ManagerAction.ActionException {
+    public <V extends Content> void addLoci(Loci loci) throws ManagerAction.ActionException {
+
+        for (Locus locus : loci.getValues()) {
+
+            addLocus(locus);
+        }
+
+    }
+
+    private <V extends Content> void addLocus(Locus<V> locus) throws ManagerAction.ActionException {
+
         if (locus instanceof TextLocus) {
             resourceManager.updateAnnotationLocus((TextLocus) locus, annotation, TextContent.class);
         } else if (locus instanceof ImageLocus) {
@@ -91,6 +108,12 @@ public class Work {
             log.error("Invalid type of locus " + locus);
             throw new UnsupportedOperationException("Invalid type of locus " + locus);
         }
+    }
+
+    public <V extends Content> void addLocus(WorkSource ws, SegmentOfInterest soi) throws ManagerAction.ActionException, InvalidURIException {
+
+        TextLocus locus = resourceManager.createLocus(ws.getValue(), soi.getValue().getFirst(), soi.getValue().getSecond(), TextContent.class);
+        resourceManager.updateAnnotationLocus(locus, annotation, TextContent.class);
     }
 
     public void save() throws ManagerAction.ActionException {
