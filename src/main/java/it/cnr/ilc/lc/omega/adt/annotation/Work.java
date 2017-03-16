@@ -11,8 +11,6 @@ import it.cnr.ilc.lc.omega.adt.annotation.dto.PubblicationDate;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.SegmentOfInterest;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.Title;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.WorkSource;
-import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotation;
-import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotationBuilder;
 import it.cnr.ilc.lc.omega.annotation.structural.WorkAnnotation;
 import it.cnr.ilc.lc.omega.annotation.structural.WorkAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
@@ -27,7 +25,6 @@ import it.cnr.ilc.lc.omega.entity.TextContent;
 import it.cnr.ilc.lc.omega.entity.TextLocus;
 import it.cnr.ilc.lc.omega.exception.InvalidURIException;
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,12 +50,36 @@ public class Work {
         init(annotationAuthor, authors, creationDate, info, pubblicationDate, title, uri);
     }
 
-    public static Work of(Authors authors, PubblicationDate pubblicationDate, Title title, URI uri) throws ManagerAction.ActionException {
+    /**
+     * 
+     * @param authors
+     * @param pubblicationDate
+     * @param title
+     * @param uri
+     * @return
+     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException 
+     */
+    public static Work of(Authors authors, 
+            PubblicationDate pubblicationDate, 
+            Title title, URI uri) throws ManagerAction.ActionException {
         log.info("of=(" + authors + " " + pubblicationDate + " " + title + " " + uri + ")");
 
         return new Work("user0", authors.getValue().toArray(new String[0]), Date.from(new Date().toInstant()), "", pubblicationDate, title, uri);
     }
 
+    /**
+     * 
+     * @param <T>
+     * @param <L>
+     * @param annotationAuthor
+     * @param authors
+     * @param creationDate
+     * @param info
+     * @param pubblicationDate
+     * @param title
+     * @param uri
+     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException 
+     */
     private <T extends Content, L extends Locus<T>> void init(String annotationAuthor,
             String[] authors, Date creationDate, String info, PubblicationDate pubblicationDate, Title title,
             URI uri) throws ManagerAction.ActionException {
