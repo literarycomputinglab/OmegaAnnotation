@@ -11,14 +11,14 @@ package it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore;
  * @param <T>
  * @param <K>
  */
-public interface DTOValue<T> {
+public interface DTOValueDC<T> {
 
-    static public <T,K extends DTOValue<T>> K instantiate(Class<K> clazz) throws InstantiationException, IllegalAccessException {
+    static public <T,K extends DTOValueDC<T>> K instantiate(Class<K> clazz) throws InstantiationException, IllegalAccessException {
         return clazz.newInstance();
     }
 
     abstract T getValue();
 
-    abstract <K extends DTOValue<T>> K withValue(T t);
+    abstract <K extends DTOValueDC<T>> K withValue(T t);
 
 }

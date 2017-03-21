@@ -26,5 +26,11 @@ public final class Couple<T,K> {
     public K getSecond() {
         return second;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s", first.toString(), second.toString());
+    }
+    
     
 }

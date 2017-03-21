@@ -3,15 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.cnr.ilc.lc.omega.adt.annotation.dto;
-
-import it.cnr.ilc.lc.omega.adt.annotation.dto.DTOValue;
+package it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore;
 
 /**
  *
  * @author simone
  */
-public class Contributor implements  DTOValue<String[]>{
+public class Contributor implements  DTOValueDC<String[]>{
 
     private String[] contributors;
 
@@ -25,7 +23,7 @@ public class Contributor implements  DTOValue<String[]>{
     }
 
     @Override
-    public <K extends DTOValue<String[]>> K withValue(String[] t) {
+    public <K extends DTOValueDC<String[]>> K withValue(String[] t) {
         contributors = t;
         return (K) this;
     }

@@ -5,13 +5,17 @@
  */
 package it.cnr.ilc.lc.omega.adt.annotation;
 
-import it.cnr.ilc.lc.omega.adt.annotation.dto.Contributor;
-import it.cnr.ilc.lc.omega.adt.annotation.dto.Relation;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.Contributor;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.Relation;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotation;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotationBuilder;
+import it.cnr.ilc.lc.omega.annotation.structural.WorkAnnotation;
+import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
 import it.cnr.ilc.lc.omega.entity.Annotation;
 import it.cnr.ilc.lc.omega.entity.Content;
+import it.cnr.ilc.lc.omega.exception.AnnotationAlreadyExistsException;
+import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sirius.kernel.di.std.Part;
@@ -29,31 +33,50 @@ public class DublinCore<T extends Content> {
 
     private Annotation<T, DublinCoreAnnotation> annotation;
 
-    private DublinCore() {}
-
+    private URI uri;
+    private Work w;
     
-    
-    private DublinCore(Work w) {
-        init(w);
+    private DublinCore() {
     }
 
+    private DublinCore(Work w, URI uri) {
         
-    public static DublinCore of (Work w) {
-        return new DublinCore(w);
+        init(w, uri);
     }
 
-    private void init(Work w) {
-        System.err.println("init()");
-    }
-    
-    public DublinCore withTerms (Contributor contributor, Relation relation) {
+    public static DublinCore of(Work w, URI uri) {
         
-        DublinCoreAnnotationBuilder dcab = new DublinCoreAnnotationBuilder()
-                .contributor(contributor.getValue())
-                .relation(new String[]{relation.getValue()});
-                
-                
+        return new DublinCore(w, uri); 
+    }
+
+    private void init(Work w, URI uri) {
+        
+        this.uri = uri;
+        this.w   = w;
+
+        log.info("init()");
+    }
+
+    public DublinCore withTerms(Contributor contributor, Relation relation) throws ManagerAction.ActionException {
+
+        if (null == annotation) {
+            DublinCoreAnnotationBuilder dcab = new DublinCoreAnnotationBuilder()
+                    .contributor(contributor.getValue())
+                    .relation(relation.toString().split("\\|"))
+                    .URI(uri);
+            
+            log.info("dcab=(" + dcab.toString() + ")");
+
+            annotation = resourceManager.createAnnotation(DublinCoreAnnotation.class, dcab);
+        } else {
+            throw new AnnotationAlreadyExistsException("When trying to overwrite an existing annotation " + annotation.getUri());
+        }
         return this;
     }
-    
+
+    public void save() throws ManagerAction.ActionException {
+        // controllare che annotation non sia null
+        resourceManager.saveAnnotation(annotation);
+    }
+
 }
