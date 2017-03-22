@@ -9,6 +9,7 @@ import it.cnr.ilc.lc.omega.annotation.BaseAnnotation;
 import it.cnr.ilc.lc.omega.annotation.BaseAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
+import it.cnr.ilc.lc.omega.core.datatype.ADTAbstractAnnotation;
 import it.cnr.ilc.lc.omega.core.datatype.Text;
 import it.cnr.ilc.lc.omega.entity.Annotation;
 import it.cnr.ilc.lc.omega.entity.TextContent;
@@ -23,7 +24,7 @@ import sirius.kernel.di.std.Part;
  *
  * @author simone
  */
-public class BaseAnnotationText {
+public final class BaseAnnotationText extends ADTAbstractAnnotation {
 
     private static final Logger log = LogManager.getLogger(BaseAnnotationText.class);
 
@@ -60,6 +61,11 @@ public class BaseAnnotationText {
     public void save() throws ManagerAction.ActionException {
         log.info("save()");
         resourceManager.saveAnnotation(annotation);
+    }
+
+    @Override
+    protected Annotation<TextContent, BaseAnnotation> getAnnotation() {
+        return this.annotation;
     }
 
 }

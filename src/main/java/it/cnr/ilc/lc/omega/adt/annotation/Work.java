@@ -15,6 +15,7 @@ import it.cnr.ilc.lc.omega.annotation.structural.WorkAnnotation;
 import it.cnr.ilc.lc.omega.annotation.structural.WorkAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
+import it.cnr.ilc.lc.omega.core.datatype.ADTAbstractAnnotation;
 import it.cnr.ilc.lc.omega.entity.Annotation;
 import it.cnr.ilc.lc.omega.entity.Content;
 import it.cnr.ilc.lc.omega.entity.ImageContent;
@@ -34,7 +35,7 @@ import sirius.kernel.di.std.Part;
  *
  * @author simone
  */
-public class Work {
+public final class Work extends ADTAbstractAnnotation {
 
     private static final Logger log = LogManager.getLogger(Work.class);
 
@@ -50,6 +51,10 @@ public class Work {
         init(annotationAuthor, authors, creationDate, info, pubblicationDate, title, uri);
     }
 
+    private Work (Annotation<TextContent, WorkAnnotation> ann) {
+        
+        this.annotation = ann;
+    }
     /**
      * 
      * @param authors
@@ -141,4 +146,24 @@ public class Work {
         // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
     }
+
+    @Override
+    protected Annotation<TextContent, WorkAnnotation> getAnnotation() {
+        return this.annotation;
+    }
+    
+    public static Work load (URI uri) throws ManagerAction.ActionException {
+        
+        Annotation annotationWork =  resourceManager.loadAnnotation(uri, TextContent.class);
+        
+        return new Work(annotationWork);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Work: %s", annotation.toString()); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    
 }

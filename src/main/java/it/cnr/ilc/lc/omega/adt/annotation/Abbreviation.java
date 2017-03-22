@@ -9,6 +9,7 @@ import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotation;
 import it.cnr.ilc.lc.omega.annotation.AbbreviationAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
+import it.cnr.ilc.lc.omega.core.datatype.ADTAbstractAnnotation;
 import it.cnr.ilc.lc.omega.entity.Annotation;
 import it.cnr.ilc.lc.omega.entity.Content;
 import it.cnr.ilc.lc.omega.entity.ImageContent;
@@ -27,7 +28,7 @@ import sirius.kernel.di.std.Part;
  *
  * @author simone
  */
-final public class Abbreviation {
+public final class Abbreviation extends ADTAbstractAnnotation {
 
     private static final Logger log = LogManager.getLogger(Abbreviation.class);
 
@@ -101,7 +102,7 @@ final public class Abbreviation {
             return resourceManager.createLocus(source, WKT, WKT2, ImageContent.class);
 
         } catch (InvalidURIException ex) {
-            log.error("Creating ImageLocus",ex);
+            log.error("Creating ImageLocus", ex);
         }
         return null;
     }
@@ -119,6 +120,11 @@ final public class Abbreviation {
     public void save() throws ManagerAction.ActionException {
         // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
+    }
+
+    @Override
+    protected Annotation<TextContent, AbbreviationAnnotation> getAnnotation() {
+        return this.annotation;
     }
 
     //TODO: valutare inserimento anche metodi remove

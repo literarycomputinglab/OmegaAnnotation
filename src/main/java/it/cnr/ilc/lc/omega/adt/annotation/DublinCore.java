@@ -9,9 +9,10 @@ import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.Contributor;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.Relation;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotation;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotationBuilder;
-import it.cnr.ilc.lc.omega.annotation.structural.WorkAnnotation;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
 import it.cnr.ilc.lc.omega.core.ResourceManager;
+import it.cnr.ilc.lc.omega.core.annotation.AnnotationRelationType;
+import it.cnr.ilc.lc.omega.core.datatype.ADTAbstractAnnotation;
 import it.cnr.ilc.lc.omega.entity.Annotation;
 import it.cnr.ilc.lc.omega.entity.Content;
 import it.cnr.ilc.lc.omega.exception.AnnotationAlreadyExistsException;
@@ -24,7 +25,7 @@ import sirius.kernel.di.std.Part;
  *
  * @author simone
  */
-public class DublinCore<T extends Content> {
+public final class DublinCore<T extends Content> extends ADTAbstractAnnotation {
 
     private static final Logger log = LogManager.getLogger(DublinCore.class);
 
@@ -35,24 +36,24 @@ public class DublinCore<T extends Content> {
 
     private URI uri;
     private Work w;
-    
+
     private DublinCore() {
     }
 
     private DublinCore(Work w, URI uri) {
-        
+
         init(w, uri);
     }
 
     public static DublinCore of(Work w, URI uri) {
-        
-        return new DublinCore(w, uri); 
+
+        return new DublinCore(w, uri);
     }
 
     private void init(Work w, URI uri) {
-        
+
         this.uri = uri;
-        this.w   = w;
+        this.w = w;
 
         log.info("init()");
     }
@@ -64,10 +65,11 @@ public class DublinCore<T extends Content> {
                     .contributor(contributor.getValue())
                     .relation(relation.toString().split("\\|"))
                     .URI(uri);
-            
+
             log.info("dcab=(" + dcab.toString() + ")");
 
             annotation = resourceManager.createAnnotation(DublinCoreAnnotation.class, dcab);
+            resourceManager.updateAnnotationRelation(this, this.w, AnnotationRelationType.CATALOGRAPHIC_DESCRIPTION_OF);
         } else {
             throw new AnnotationAlreadyExistsException("When trying to overwrite an existing annotation " + annotation.getUri());
         }
@@ -77,6 +79,11 @@ public class DublinCore<T extends Content> {
     public void save() throws ManagerAction.ActionException {
         // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
+    }
+
+    @Override
+    protected Annotation<T, DublinCoreAnnotation> getAnnotation() {
+        return this.annotation;
     }
 
 }
