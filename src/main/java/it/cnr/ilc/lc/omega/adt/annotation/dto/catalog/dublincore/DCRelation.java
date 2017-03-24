@@ -18,29 +18,29 @@ import org.apache.logging.log4j.Logger;
  * @author AMDG
  * @author SM
  */
-public class Relation implements DTOValueDC<List<Couple<DublinCoreAnnotation.DCTerms, RelationObject>>> {
+public class DCRelation implements DTOValueDC<List<Couple<DublinCoreAnnotation.DCTerms, DCRelationObject>>> {
 
-    private static final Logger log = LogManager.getLogger(Relation.class);
+    private static final Logger log = LogManager.getLogger(DCRelation.class);
 
-    private List<Couple<DublinCoreAnnotation.DCTerms, RelationObject>> relations;
+    private List<Couple<DublinCoreAnnotation.DCTerms, DCRelationObject>> relations;
 
-    Relation() {
+    DCRelation() {
     }
 
     @Override
-    public List<Couple<DublinCoreAnnotation.DCTerms, RelationObject>> getValue() {
+    public List<Couple<DublinCoreAnnotation.DCTerms, DCRelationObject>> getValue() {
         return relations;
     }
 
     @Override
-    public <K extends DTOValueDC<List<Couple<DublinCoreAnnotation.DCTerms, RelationObject>>>> K
-            withValue(List<Couple<DublinCoreAnnotation.DCTerms, RelationObject>> t) {
+    public <K extends DTOValueDC<List<Couple<DublinCoreAnnotation.DCTerms, DCRelationObject>>>> K
+            withValue(List<Couple<DublinCoreAnnotation.DCTerms, DCRelationObject>> t) {
 
         relations = t;
         return (K) this;
     }
 
-    public Relation addValue(Couple<DublinCoreAnnotation.DCTerms, RelationObject> val) {
+    public DCRelation addValue(Couple<DublinCoreAnnotation.DCTerms, DCRelationObject> val) {
 
         if (null == relations) {
             relations = new ArrayList<>();
@@ -54,8 +54,8 @@ public class Relation implements DTOValueDC<List<Couple<DublinCoreAnnotation.DCT
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        for (Iterator<Couple<DublinCoreAnnotation.DCTerms, RelationObject>> iterator = relations.iterator(); iterator.hasNext();) {
-            Couple<DublinCoreAnnotation.DCTerms, RelationObject> next = iterator.next();
+        for (Iterator<Couple<DublinCoreAnnotation.DCTerms, DCRelationObject>> iterator = relations.iterator(); iterator.hasNext();) {
+            Couple<DublinCoreAnnotation.DCTerms, DCRelationObject> next = iterator.next();
             if (iterator.hasNext()) {
                 sb.append(String.format("%s|", next.toString()));
             } else {

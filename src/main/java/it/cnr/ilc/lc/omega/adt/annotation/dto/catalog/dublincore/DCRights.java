@@ -3,31 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.cnr.ilc.lc.omega.adt.annotation.dto;
-
+package it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore;
 
 /**
  *
  * @author simone
  */
-public final class Title implements DTOValue<String>{
-    
-    String title;
+public class DCRights implements  DTOValueDC<String>{
 
-    Title() {
+    private String rights;
+
+    DCRights() {
     }
-        
+    
     
     @Override
     public String getValue() {
-        return title;
+        return rights;
     }
 
     @Override
-    public <K extends DTOValue<String>> K withValue(String t) {
-        this.title = t;
+    public <K extends DTOValueDC<String>> K withValue(String t) {
+        rights = t;
         return (K) this;
     }
-            
     
 }

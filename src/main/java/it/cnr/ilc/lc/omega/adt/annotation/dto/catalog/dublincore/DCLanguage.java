@@ -9,24 +9,24 @@ package it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore;
  *
  * @author simone
  */
-public class Contributor implements  DTOValueDC<String[]>{
-
-    private String[] contributors;
-
-    Contributor() {
-    }
+public class DCLanguage   implements  DTOValueDC<String> {
     
-    
-    @Override
-    public String[] getValue() {
-        return contributors;
+    private String language;
+
+    DCLanguage() {
     }
 
     @Override
-    public <K extends DTOValueDC<String[]>> K withValue(String[] t) {
-        contributors = t;
+    public String getValue() {
+        return language;
+    }
+
+    @Override
+    public <K extends DTOValueDC<String>> K withValue(String t) {
+        language = t;
         return (K) this;
     }
+    
     
     
 }

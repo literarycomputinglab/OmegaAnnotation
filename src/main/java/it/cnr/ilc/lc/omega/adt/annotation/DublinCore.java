@@ -5,8 +5,21 @@
  */
 package it.cnr.ilc.lc.omega.adt.annotation;
 
-import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.Contributor;
-import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.Relation;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCContributor;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCCoverage;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCCreator;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCDate;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCDescription;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCFormat;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCIdentifier;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCLanguage;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCPublisher;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCRelation;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCRights;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCSource;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCSubject;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCTitle;
+import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCType;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotation;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
@@ -15,6 +28,7 @@ import it.cnr.ilc.lc.omega.core.annotation.AnnotationRelationType;
 import it.cnr.ilc.lc.omega.core.datatype.ADTAbstractAnnotation;
 import it.cnr.ilc.lc.omega.entity.Annotation;
 import it.cnr.ilc.lc.omega.entity.Content;
+import it.cnr.ilc.lc.omega.entity.ext.DateEvent;
 import it.cnr.ilc.lc.omega.exception.AnnotationAlreadyExistsException;
 import java.net.URI;
 import org.apache.logging.log4j.LogManager;
@@ -58,12 +72,32 @@ public final class DublinCore<T extends Content> extends ADTAbstractAnnotation {
         log.info("init()");
     }
 
-    public DublinCore withTerms(Contributor contributor, Relation relation) throws ManagerAction.ActionException {
+    //contributor ", "coverage", "creator", "date", "description", 
+    //"format", "identifier", "language", "publisher", "relation", "rights",
+    //"source", "subject", "title", "type"
+    public DublinCore withTerms(DCContributor contributor, DCCoverage coverage,
+            DCCreator creator, DCDate date, DCDescription description, DCFormat format,
+            DCIdentifier identifier, DCLanguage language, DCPublisher publisher,
+            DCRelation relation, DCRights rights, DCSource source, DCSubject subject,
+            DCTitle title, DCType type) throws ManagerAction.ActionException {
 
         if (null == annotation) {
             DublinCoreAnnotationBuilder dcab = new DublinCoreAnnotationBuilder()
                     .contributor(contributor.getValue())
-                    .relation(relation.toString().split("\\|"))
+                    .coverage(coverage.getValue())
+                    .creator(creator.getValue())
+                    .dateEvent(new DateEvent(date.getValue().getFirst(), date.getValue().getSecond())) //ATTENZIONE: DATEEVENT da gestire dentro il builder
+                    .description(description.getValue())
+                    .format(format.getValue())
+                    .identifier(identifier.getValue())
+                    .language(language.getValue())
+                    .publisher(publisher.getValue())
+                    .relation(relation.toString().split("\\|")) //DA FARE NEL BUILDER
+                    .rights(rights.getValue())
+                    .source(source.getValue())
+                    .subject(subject.getValue())
+                    .title(title.getValue())
+                    .type(type.getValue())
                     .URI(uri);
 
             log.info("dcab=(" + dcab.toString() + ")");

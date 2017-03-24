@@ -9,26 +9,23 @@ package it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore;
  *
  * @author simone
  */
-public class RelationObject implements DTOValueDC<String>{
+public class DCSource  implements  DTOValueDC<String> {
 
-    private String relationObj;
+    private String source;
+
+    public DCSource() {
+    }
+    
     
     @Override
     public String getValue() {
-        return relationObj;
+        return source;
     }
 
     @Override
     public <K extends DTOValueDC<String>> K withValue(String t) {
-        relationObj = t;
+        source = t;
         return (K) this;
     }
-
-    @Override
-    public String toString() {
-        return relationObj;
-    }
-    
-    
     
 }
