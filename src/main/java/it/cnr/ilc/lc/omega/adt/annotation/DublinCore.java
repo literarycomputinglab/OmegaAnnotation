@@ -39,7 +39,7 @@ import sirius.kernel.di.std.Part;
  *
  * @author simone
  */
-public final class DublinCore<T extends Content> extends ADTAbstractAnnotation {
+public final class DublinCore<T extends Content> extends ADTAbstractAnnotation implements CatalogItem {
 
     private static final Logger log = LogManager.getLogger(DublinCore.class);
 
@@ -62,6 +62,15 @@ public final class DublinCore<T extends Content> extends ADTAbstractAnnotation {
     public static DublinCore of(Work w, URI uri) {
 
         return new DublinCore(w, uri);
+    }
+
+    private DublinCore(Annotation<T, DublinCoreAnnotation> annotation) throws ManagerAction.ActionException {
+
+        log.debug("Creating DublinCore by annotation");
+
+        this.annotation = annotation;
+        this.uri = URI.create(annotation.getUri());
+        this.w = Work.load(URI.create(annotation.getRelations().next().getTargetAnnotation().getUri()));
     }
 
     private void init(Work w, URI uri) {
@@ -113,6 +122,31 @@ public final class DublinCore<T extends Content> extends ADTAbstractAnnotation {
     public void save() throws ManagerAction.ActionException {
         // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
+    }
+
+    public static DublinCore load(URI uri) throws ManagerAction.ActionException {
+
+        DublinCore dc = null;
+        Annotation<Content, DublinCoreAnnotation> annotationDC = null;
+        try {
+
+            annotationDC = (Annotation<Content, DublinCoreAnnotation>) resourceManager.loadAnnotation(uri, Content.class);
+
+        } catch (ManagerAction.ActionException e) {
+            throw new ManagerAction.ActionException(new Exception("Error while loading Dublic Core annotation with URI " + uri, e));
+        }
+
+        try {
+            if (annotationDC != null) {
+                dc = new DublinCore(annotationDC);
+            } else {
+                throw new ManagerAction.ActionException(new Exception("Dublic Core annotation is null with URI " + uri));
+            }
+        } catch (ManagerAction.ActionException e) {
+            throw new ManagerAction.ActionException(new Exception("Error while loading Work for Dublic Core annotation with Dublin Core URI " + uri, e));
+        }
+
+        return dc;
     }
 
     @Override
