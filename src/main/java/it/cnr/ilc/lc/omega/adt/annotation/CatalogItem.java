@@ -5,10 +5,12 @@
  */
 package it.cnr.ilc.lc.omega.adt.annotation;
 
+import it.cnr.ilc.lc.omega.core.datatype.ADTAnnotation;
+
 /**
  *
  * @author simone
  */
-public interface CatalogItem {
+public interface CatalogItem extends ADTAnnotation {
     
 }

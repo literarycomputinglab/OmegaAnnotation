@@ -35,7 +35,7 @@ import sirius.kernel.di.std.Part;
  *
  * @author simone
  */
-public final class Work extends ADTAbstractAnnotation {
+public final class Work extends ADTAbstractAnnotation implements CatalogItem {
 
     private static final Logger log = LogManager.getLogger(Work.class);
 
