@@ -26,7 +26,9 @@ import it.cnr.ilc.lc.omega.entity.TextContent;
 import it.cnr.ilc.lc.omega.entity.TextLocus;
 import it.cnr.ilc.lc.omega.exception.InvalidURIException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sirius.kernel.di.std.Part;
@@ -51,21 +53,22 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
         init(annotationAuthor, authors, creationDate, info, pubblicationDate, title, uri);
     }
 
-    private Work (Annotation<TextContent, WorkAnnotation> ann) {
-        
+    private Work(Annotation<TextContent, WorkAnnotation> ann) {
+
         this.annotation = ann;
     }
+
     /**
-     * 
+     *
      * @param authors
      * @param pubblicationDate
      * @param title
      * @param uri
      * @return
-     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException 
+     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException
      */
-    public static Work of(Authors authors, 
-            PubblicationDate pubblicationDate, 
+    public static Work of(Authors authors,
+            PubblicationDate pubblicationDate,
             Title title, URI uri) throws ManagerAction.ActionException {
         log.info("of=(" + authors + " " + pubblicationDate + " " + title + " " + uri + ")");
 
@@ -73,7 +76,7 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
     }
 
     /**
-     * 
+     *
      * @param <T>
      * @param <L>
      * @param annotationAuthor
@@ -83,7 +86,7 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
      * @param pubblicationDate
      * @param title
      * @param uri
-     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException 
+     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException
      */
     private <T extends Content, L extends Locus<T>> void init(String annotationAuthor,
             String[] authors, Date creationDate, String info, PubblicationDate pubblicationDate, Title title,
@@ -151,19 +154,33 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
     protected Annotation<TextContent, WorkAnnotation> getAnnotation() {
         return this.annotation;
     }
-    
-    public static Work load (URI uri) throws ManagerAction.ActionException {
-        
-        Annotation annotationWork =  resourceManager.loadAnnotation(uri, TextContent.class);
-        
+
+    public static Work load(URI uri) throws ManagerAction.ActionException {
+
+        Annotation annotationWork = resourceManager.loadAnnotation(uri, TextContent.class);
+
         return new Work(annotationWork);
+    }
+
+    public URI getURI() { //la URI e' della annotation e non quella in annotation.data
+        return URI.create(annotation.getUri());
+    }
+
+    public static List<Work> loadAll() throws ManagerAction.ActionException {
+
+        List<Work> array = new ArrayList<>();
+        List<Annotation<TextContent, WorkAnnotation>> loa = resourceManager.loadAllAnnotationData(TextContent.class, WorkAnnotation.class);
+        log.info("loadAll() result lenght " + loa.size());
+
+        for (Annotation<TextContent, WorkAnnotation> ann : loa) {
+            array.add(new Work(ann));
+        }
+        return array;
     }
 
     @Override
     public String toString() {
         return String.format("Work: %s", annotation.toString()); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
-    
+
 }
