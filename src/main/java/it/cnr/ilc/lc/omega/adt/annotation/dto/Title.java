@@ -16,7 +16,12 @@ public final class Title implements DTOValue<String>{
 
     Title() {
     }
+
+    public Title(String title) {
+        this.title = title;
+    }
         
+    
     
     @Override
     public String getValue() {

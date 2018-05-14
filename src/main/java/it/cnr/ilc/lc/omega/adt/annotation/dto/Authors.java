@@ -5,6 +5,7 @@
  */
 package it.cnr.ilc.lc.omega.adt.annotation.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public final class Authors implements DTOValue<List<String>> {
     }
 
     @Override
+    @JsonIgnore
     public List<String> getValue() {
         return Arrays.asList(authors);
     }
@@ -36,5 +38,10 @@ public final class Authors implements DTOValue<List<String>> {
         return (K) this;
     }
 
+    public void setAuthors(String[] authors) {
+        this.authors = authors;
+    }
+
+    
  
 }

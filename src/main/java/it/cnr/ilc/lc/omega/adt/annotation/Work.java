@@ -107,6 +107,17 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
 
     }
 
+    public static <T extends Content> TextLocus createTextLocus(Source<T> source) throws ManagerAction.ActionException {
+
+        try {
+            return resourceManager.createLocus(source, TextContent.class);
+
+        } catch (InvalidURIException ex) {
+            log.error("Creating TextLocus", ex);
+        }
+        return null;
+    }
+
     public static <T extends Content> TextLocus createTextLocus(Source<T> source, int start, int end) throws ManagerAction.ActionException {
 
         try {
@@ -122,24 +133,29 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
 
         for (Locus locus : loci.getValues()) {
 
-            addLocus(locus);
+            if (locus instanceof TextLocus) {
+                addTextLocus(locus);
+            } else if (locus instanceof ImageLocus) {
+                addImageLocus(locus);
+            } else {
+                log.error("throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);");
+                throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);
+            }
         }
 
     }
 
-    private <V extends Content> void addLocus(Locus<V> locus) throws ManagerAction.ActionException {
+    private void addTextLocus(Locus<TextContent> locus) throws ManagerAction.ActionException {
 
-        if (locus instanceof TextLocus) {
             resourceManager.updateAnnotationLocus((TextLocus) locus, annotation, TextContent.class);
-        } else if (locus instanceof ImageLocus) {
+    }
+    
+    private void addImageLocus(Locus<ImageContent> locus) throws ManagerAction.ActionException {
+
             resourceManager.updateAnnotationLocus((ImageLocus) locus, annotation, ImageContent.class);
-        } else {
-            log.error("Invalid type of locus " + locus);
-            throw new UnsupportedOperationException("Invalid type of locus " + locus);
-        }
     }
 
-    public <V extends Content> void addLocus(WorkSource ws, SegmentOfInterest soi) throws ManagerAction.ActionException, InvalidURIException {
+    public void addLocus(WorkSource ws, SegmentOfInterest soi) throws ManagerAction.ActionException, InvalidURIException {
 
         TextLocus locus = resourceManager.createLocus(ws.getValue(), soi.getValue().getFirst(), soi.getValue().getSecond(), TextContent.class);
         resourceManager.updateAnnotationLocus(locus, annotation, TextContent.class);

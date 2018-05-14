@@ -5,6 +5,8 @@
  */
 package it.cnr.ilc.lc.omega.adt.annotation.dto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -18,6 +20,20 @@ public final class PubblicationDate implements DTOValue<Date>{
     PubblicationDate() {
     }
 
+    PubblicationDate(String pd ) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+        try {
+
+            pubblicationDate = formatter.parse(pd);
+            System.out.println(pubblicationDate);
+            System.out.println(formatter.format(pubblicationDate));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public Date getValue() {
         return pubblicationDate;
@@ -28,6 +44,5 @@ public final class PubblicationDate implements DTOValue<Date>{
         this.pubblicationDate = t;
         return (K) this;
     }
-    
-    
+   
 }
