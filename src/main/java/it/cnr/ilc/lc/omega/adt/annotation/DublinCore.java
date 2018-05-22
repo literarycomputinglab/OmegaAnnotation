@@ -70,7 +70,7 @@ public final class DublinCore<T extends Content> extends ADTAbstractAnnotation i
 
         this.annotation = annotation;
         this.uri = URI.create(annotation.getUri());
-        this.w = Work.load(URI.create(annotation.getRelations().next().getTargetAnnotation().getUri()));
+        this.w = Work.load(URI.create(annotation.getRelationsIterator().next().getTargetAnnotation().getUri()));
     }
 
     private void init(Work w, URI uri) {
