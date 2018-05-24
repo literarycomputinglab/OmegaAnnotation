@@ -39,164 +39,170 @@ import sirius.kernel.di.std.Part;
  */
 public final class Work extends ADTAbstractAnnotation implements CatalogItem {
 
- private static final Logger log = LogManager.getLogger(Work.class);
+    private static final Logger log = LogManager.getLogger(Work.class);
 
- @Part
- private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static
+    @Part
+    private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static
 
- private Annotation<TextContent, WorkAnnotation> annotation;
+    private Annotation<TextContent, WorkAnnotation> annotation;
 
- private Work(String annotationAuthor, String[] authors, Date creationDate,
- String info, PubblicationDate pubblicationDate, Title title,
- URI uri) throws ManagerAction.ActionException {
+    private Work(String annotationAuthor, String[] authors, Date creationDate,
+            String info, PubblicationDate pubblicationDate, Title title,
+            URI uri) throws ManagerAction.ActionException {
 
- init(annotationAuthor, authors, creationDate, info, pubblicationDate, title, uri);
- }
+        init(annotationAuthor, authors, creationDate, info, pubblicationDate, title, uri);
+    }
 
- private Work(Annotation<TextContent, WorkAnnotation> ann) {
+    private Work(Annotation<TextContent, WorkAnnotation> ann) {
 
- this.annotation = ann;
- }
+        this.annotation = ann;
+    }
 
- /**
- *
- * @param authors
- * @param pubblicationDate
- * @param title
- * @param uri
- * @return
- * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException
- */
- public static Work of(Authors authors,
- PubblicationDate pubblicationDate,
- Title title, URI uri) throws ManagerAction.ActionException {
- log.info("of=(" + authors + " " + pubblicationDate + " " + title + " " + uri + ")");
+    /**
+     *
+     * @param authors
+     * @param pubblicationDate
+     * @param title
+     * @param uri
+     * @return
+     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException
+     */
+    public static Work of(Authors authors,
+            PubblicationDate pubblicationDate,
+            Title title, URI uri) throws ManagerAction.ActionException {
+        log.info("of=(" + authors + " " + pubblicationDate + " " + title + " " + uri + ")");
 
- return new Work("user0", authors.getValue().toArray(new String[0]), Date.from(new Date().toInstant()), "", pubblicationDate, title, uri);
- }
+        return new Work("user0", authors.getValue().toArray(new String[0]), Date.from(new Date().toInstant()), "", pubblicationDate, title, uri);
+    }
 
- /**
- *
- * @param <T>
- * @param <L>
- * @param annotationAuthor
- * @param authors
- * @param creationDate
- * @param info
- * @param pubblicationDate
- * @param title
- * @param uri
- * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException
- */
- private <T extends Content, L extends Locus<T>> void init(String annotationAuthor,
- String[] authors, Date creationDate, String info, PubblicationDate pubblicationDate, Title title,
- URI uri) throws ManagerAction.ActionException {
+    /**
+     *
+     * @param <T>
+     * @param <L>
+     * @param annotationAuthor
+     * @param authors
+     * @param creationDate
+     * @param info
+     * @param pubblicationDate
+     * @param title
+     * @param uri
+     * @throws it.cnr.ilc.lc.omega.core.ManagerAction.ActionException
+     */
+    private <T extends Content, L extends Locus<T>> void init(String annotationAuthor,
+            String[] authors, Date creationDate, String info, PubblicationDate pubblicationDate, Title title,
+            URI uri) throws ManagerAction.ActionException {
 
- log.info("Work init(): resourceManager=(" + resourceManager + ")");
- WorkAnnotationBuilder wab = new WorkAnnotationBuilder()
- .annotationAuthor(annotationAuthor)
- .authors(authors)
- .creationData(creationDate)
- .info(info)
- .pubblicationDate(pubblicationDate.getValue())
- .title(title.getValue())
- .URI(uri);
+        log.info("Work init(): resourceManager=(" + resourceManager + ")");
+        WorkAnnotationBuilder wab = new WorkAnnotationBuilder()
+                .annotationAuthor(annotationAuthor)
+                .authors(authors)
+                .creationData(creationDate)
+                .info(info)
+                .pubblicationDate(pubblicationDate.getValue())
+                .title(title.getValue())
+                .URI(uri);
 
- log.info(wab.toString());
- annotation = resourceManager.createAnnotation(WorkAnnotation.class, wab);
+        log.info(wab.toString());
+        annotation = resourceManager.createAnnotation(WorkAnnotation.class, wab);
 
- }
+    }
 
- public static <T extends Content> TextLocus createTextLocus(Source<T> source) throws ManagerAction.ActionException {
+    public static <T extends Content> TextLocus createTextLocus(Source<T> source) throws ManagerAction.ActionException {
 
- try {
- return resourceManager.createLocus(source, TextContent.class);
+        try {
+            return resourceManager.createLocus(source, TextContent.class);
 
- } catch (InvalidURIException ex) {
- log.error("Creating TextLocus", ex);
- }
- return null;
- }
+        } catch (InvalidURIException ex) {
+            log.error("Creating TextLocus", ex);
+        }
+        return null;
+    }
 
- public static <T extends Content> TextLocus createTextLocus(Source<T> source, int start, int end) throws ManagerAction.ActionException {
+    public static <T extends Content> TextLocus createTextLocus(Source<T> source, int start, int end) throws ManagerAction.ActionException {
 
- try {
- return resourceManager.createLocus(source, start, end, TextContent.class);
+        try {
+            return resourceManager.createLocus(source, start, end, TextContent.class);
 
- } catch (InvalidURIException ex) {
- log.error("Creating TextLocus", ex);
- }
- return null;
- }
+        } catch (InvalidURIException ex) {
+            log.error("Creating TextLocus", ex);
+        }
+        return null;
+    }
 
- public <V extends Content> void addLoci(Loci loci) throws ManagerAction.ActionException {
+    public <V extends Content> void addLoci(Loci loci) throws ManagerAction.ActionException {
 
- for (Locus locus : loci.getValues()) {
+        for (Locus locus : loci.getValues()) {
 
- if (locus instanceof TextLocus) {
- addTextLocus(locus);
- } else if (locus instanceof ImageLocus) {
- addImageLocus(locus);
- } else {
- log.error("throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);");
- throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);
- }
- }
+            if (locus instanceof TextLocus) {
+                addTextLocus(locus);
+            } else if (locus instanceof ImageLocus) {
+                addImageLocus(locus);
+            } else {
+                log.error("throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);");
+                throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);
+            }
+        }
 
- }
+    }
 
- private void addTextLocus(Locus<TextContent> locus) throws ManagerAction.ActionException {
+    private void addTextLocus(Locus<TextContent> locus) throws ManagerAction.ActionException {
 
- resourceManager.updateAnnotationLocus((TextLocus) locus, annotation, TextContent.class);
- }
- 
- private void addImageLocus(Locus<ImageContent> locus) throws ManagerAction.ActionException {
+        resourceManager.updateAnnotationLocus((TextLocus) locus, annotation, TextContent.class);
+    }
 
- resourceManager.updateAnnotationLocus((ImageLocus) locus, annotation, ImageContent.class);
- }
+    private void addImageLocus(Locus<ImageContent> locus) throws ManagerAction.ActionException {
 
- public void addLocus(WorkSource ws, SegmentOfInterest soi) throws ManagerAction.ActionException, InvalidURIException {
+        resourceManager.updateAnnotationLocus((ImageLocus) locus, annotation, ImageContent.class);
+    }
 
- TextLocus locus = resourceManager.createLocus(ws.getValue(), soi.getValue().getFirst(), soi.getValue().getSecond(), TextContent.class);
- resourceManager.updateAnnotationLocus(locus, annotation, TextContent.class);
- }
+    public void addLocus(WorkSource ws, SegmentOfInterest soi) throws ManagerAction.ActionException, InvalidURIException {
 
- public void save() throws ManagerAction.ActionException {
- // controllare che annotation non sia null
- resourceManager.saveAnnotation(annotation);
- }
+        TextLocus locus = resourceManager.createLocus(ws.getValue(), soi.getValue().getFirst(), soi.getValue().getSecond(), TextContent.class);
+        resourceManager.updateAnnotationLocus(locus, annotation, TextContent.class);
+    }
 
- @Override
- protected Annotation<TextContent, WorkAnnotation> getAnnotation() {
- return this.annotation;
- }
+    public void addLocus(WorkSource ws) throws ManagerAction.ActionException, InvalidURIException {
 
- public static Work load(URI uri) throws ManagerAction.ActionException {
+        TextLocus locus = resourceManager.createLocus(ws.getValue(), TextContent.class);
+        resourceManager.updateAnnotationLocus(locus, annotation, TextContent.class);
+    }
 
- Annotation annotationWork = resourceManager.loadAnnotation(uri, TextContent.class);
+    public void save() throws ManagerAction.ActionException {
+        // controllare che annotation non sia null
+        resourceManager.saveAnnotation(annotation);
+    }
 
- return new Work(annotationWork);
- }
+    @Override
+    protected Annotation<TextContent, WorkAnnotation> getAnnotation() {
+        return this.annotation;
+    }
 
- public URI getURI() { //la URI e' della annotation e non quella in annotation.data
- return URI.create(annotation.getUri());
- }
+    public static Work load(URI uri) throws ManagerAction.ActionException {
 
- public static List<Work> loadAll() throws ManagerAction.ActionException {
+        Annotation annotationWork = resourceManager.loadAnnotation(uri, TextContent.class);
 
- List<Work> array = new ArrayList<>();
- List<Annotation<TextContent, WorkAnnotation>> loa = resourceManager.loadAllAnnotationData(TextContent.class, WorkAnnotation.class);
- log.info("loadAll() result lenght " + loa.size());
+        return new Work(annotationWork);
+    }
 
- for (Annotation<TextContent, WorkAnnotation> ann : loa) {
- array.add(new Work(ann));
- }
- return array;
- }
+    public URI getURI() { //la URI e' della annotation e non quella in annotation.data
+        return URI.create(annotation.getUri());
+    }
 
- @Override
- public String toString() {
- return String.format("Work: %s", annotation.toString()); //To change body of generated methods, choose Tools | Templates.
- }
+    public static List<Work> loadAll() throws ManagerAction.ActionException {
+
+        List<Work> array = new ArrayList<>();
+        List<Annotation<TextContent, WorkAnnotation>> loa = resourceManager.loadAllAnnotationData(TextContent.class, WorkAnnotation.class);
+        log.info("loadAll() result lenght " + loa.size());
+
+        for (Annotation<TextContent, WorkAnnotation> ann : loa) {
+            array.add(new Work(ann));
+        }
+        return array;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Work: %s", annotation.toString()); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
