@@ -49,6 +49,7 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
         BaseAnnotationBuilder bab = new BaseAnnotationBuilder().URI(uri).text(text);
         annotation = resourceManager.createAnnotation(
                 BaseAnnotation.class, bab);
+        
     }
 
     public void addLocus(Text text, int start, int end) throws ManagerAction.ActionException, InvalidURIException {
