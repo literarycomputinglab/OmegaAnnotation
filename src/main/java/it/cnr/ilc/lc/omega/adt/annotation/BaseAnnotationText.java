@@ -38,7 +38,7 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
         init(text, uri);
     }
 
-    public static BaseAnnotationText of(String text, URI uri) throws ManagerAction.ActionException {
+    public static BaseAnnotationText of(URI uri, String text) throws ManagerAction.ActionException {
         log.info("BaseAnnotationText.of: text=(" + text + "), uri=(" + uri + ")");
         //FIXME Aggiungere URI della annotazione
         return new BaseAnnotationText(text, uri);
