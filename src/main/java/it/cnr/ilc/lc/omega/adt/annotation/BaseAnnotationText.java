@@ -30,9 +30,7 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
 
     private Annotation<TextContent, BaseAnnotation> annotation;
 
-    @Part
-    private static ResourceManager resourceManager; //ERROR: l'injection (SIRIUS KERNEL) funziona solo se dichiarata static in quanto richiamata da una new in un metodo static
-
+   
     private BaseAnnotationText(String text, URI uri) throws ManagerAction.ActionException {
 
         init(text, uri);
@@ -68,5 +66,6 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
     protected Annotation<TextContent, BaseAnnotation> getAnnotation() {
         return this.annotation;
     }
+
 
 }
