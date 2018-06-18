@@ -20,6 +20,7 @@ import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCSource;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCSubject;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCTitle;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.catalog.dublincore.DCType;
+import it.cnr.ilc.lc.omega.annotation.BaseAnnotation;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotation;
 import it.cnr.ilc.lc.omega.annotation.catalog.DublinCoreAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
@@ -28,6 +29,7 @@ import it.cnr.ilc.lc.omega.core.annotation.AnnotationRelationType;
 import it.cnr.ilc.lc.omega.core.datatype.ADTAbstractAnnotation;
 import it.cnr.ilc.lc.omega.entity.Annotation;
 import it.cnr.ilc.lc.omega.entity.Content;
+import it.cnr.ilc.lc.omega.entity.TextContent;
 import it.cnr.ilc.lc.omega.entity.ext.DateEvent;
 import it.cnr.ilc.lc.omega.exception.AnnotationAlreadyExistsException;
 import java.net.URI;
@@ -119,9 +121,10 @@ public final class DublinCore<T extends Content> extends ADTAbstractAnnotation i
         return this;
     }
 
+    @Override
     public void save() throws ManagerAction.ActionException {
         // controllare che annotation non sia null
-        resourceManager.saveAnnotation(annotation);
+        this.annotation = resourceManager.saveAnnotation(annotation);
     }
 
     public static DublinCore load(URI uri) throws ManagerAction.ActionException {
@@ -154,4 +157,14 @@ public final class DublinCore<T extends Content> extends ADTAbstractAnnotation i
         return this.annotation;
     }
 
+    @Override
+    protected void setAnnotation(Annotation<?, ?> annotation) {
+        this.annotation = (Annotation<T, DublinCoreAnnotation>) annotation;
+    }
+
+    @Override
+    public boolean isRemovable() throws ManagerAction.ActionException {
+       return !resourceManager.isTargetOfRelation(annotation);
+
+    }
 }

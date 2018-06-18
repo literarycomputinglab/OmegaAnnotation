@@ -8,7 +8,6 @@ package it.cnr.ilc.lc.omega.adt.annotation;
 import it.cnr.ilc.lc.omega.annotation.BaseAnnotation;
 import it.cnr.ilc.lc.omega.annotation.BaseAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
-import it.cnr.ilc.lc.omega.core.ResourceManager;
 import it.cnr.ilc.lc.omega.core.datatype.ADTAbstractAnnotation;
 import it.cnr.ilc.lc.omega.core.datatype.Text;
 import it.cnr.ilc.lc.omega.entity.Annotation;
@@ -18,7 +17,6 @@ import it.cnr.ilc.lc.omega.exception.InvalidURIException;
 import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sirius.kernel.di.std.Part;
 
 /**
  *
@@ -30,7 +28,6 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
 
     private Annotation<TextContent, BaseAnnotation> annotation;
 
-   
     private BaseAnnotationText(String text, URI uri) throws ManagerAction.ActionException {
 
         init(text, uri);
@@ -47,7 +44,7 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
         BaseAnnotationBuilder bab = new BaseAnnotationBuilder().URI(uri).text(text);
         annotation = resourceManager.createAnnotation(
                 BaseAnnotation.class, bab);
-        
+
     }
 
     public void addLocus(Text text, int start, int end) throws ManagerAction.ActionException, InvalidURIException {
@@ -57,9 +54,10 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
 ///////        resourceManager.updateTextAnnotationLocus(text.getSource(), annotation, start, end);
     }
 
+    @Override
     public void save() throws ManagerAction.ActionException {
         log.info("save()");
-        resourceManager.saveAnnotation(annotation);
+        this.annotation = resourceManager.saveAnnotation(annotation);
     }
 
     @Override
@@ -67,5 +65,13 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
         return this.annotation;
     }
 
+    @Override
+    protected void setAnnotation(Annotation<?, ?> annotation) {
+        this.annotation = (Annotation<TextContent, BaseAnnotation>) annotation;
+    }
 
+    @Override
+    public boolean isRemovable() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

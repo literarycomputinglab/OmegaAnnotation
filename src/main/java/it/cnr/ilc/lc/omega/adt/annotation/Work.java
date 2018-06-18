@@ -167,6 +167,7 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
         resourceManager.updateAnnotationLocus(locus, annotation, TextContent.class);
     }
 
+    @Override
     public void save() throws ManagerAction.ActionException {
         // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
@@ -205,4 +206,17 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
         return String.format("Work: %s", annotation.toString()); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    protected void setAnnotation(Annotation<?, ?> annotation) {
+        this.annotation = (Annotation<TextContent, WorkAnnotation>) annotation;
+    }
+
+    @Override
+    public boolean isRemovable() throws ManagerAction.ActionException{
+
+       return !resourceManager.isTargetOfRelation(annotation);
+    }
+
+    
+    
 }

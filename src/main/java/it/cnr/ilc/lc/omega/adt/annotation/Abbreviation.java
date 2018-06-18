@@ -115,6 +115,7 @@ public final class Abbreviation extends ADTAbstractAnnotation {
         }
     }
 
+    @Override
     public void save() throws ManagerAction.ActionException {
         // controllare che annotation non sia null
         resourceManager.saveAnnotation(annotation);
@@ -123,6 +124,16 @@ public final class Abbreviation extends ADTAbstractAnnotation {
     @Override
     protected Annotation<TextContent, AbbreviationAnnotation> getAnnotation() {
         return this.annotation;
+    }
+
+    @Override
+    protected void setAnnotation(Annotation<?,?> annotation) {
+        this.annotation = (Annotation<TextContent, AbbreviationAnnotation>) annotation;
+    }
+
+    @Override
+    public boolean isRemovable() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     //TODO: valutare inserimento anche metodi remove

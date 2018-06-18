@@ -9,6 +9,7 @@ import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.LeftTextContext;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.RightTextContext;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.TextFragment;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.UriSense;
+import it.cnr.ilc.lc.omega.annotation.BaseAnnotation;
 import it.cnr.ilc.lc.omega.annotation.LexoAnnotation;
 import it.cnr.ilc.lc.omega.annotation.LexoAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
@@ -97,6 +98,7 @@ public class LexoTerm extends ADTAbstractAnnotation {
         return this;
     }
 
+    @Override
     public void save() throws ManagerAction.ActionException {
         log.info("save()");
         if (null != annotation) {
@@ -112,5 +114,15 @@ public class LexoTerm extends ADTAbstractAnnotation {
         TextLocus locus = resourceManager.createLocus(text.getSource(), start, end, TextContent.class);
         resourceManager.updateAnnotationLocus(locus, annotation, TextContent.class);
 ///////        resourceManager.updateTextAnnotationLocus(text.getSource(), annotation, start, end);
+    }
+
+    @Override
+    protected void setAnnotation(Annotation<?, ?> annotation) {
+        this.annotation = (Annotation<TextContent, LexoAnnotation>) annotation;
+    }
+
+    @Override
+    public boolean isRemovable() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
