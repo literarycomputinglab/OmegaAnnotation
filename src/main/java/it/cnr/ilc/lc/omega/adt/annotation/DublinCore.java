@@ -136,17 +136,17 @@ public final class DublinCore<T extends Content> extends ADTAbstractAnnotation i
             annotationDC = (Annotation<Content, DublinCoreAnnotation>) resourceManager.loadAnnotation(uri, Content.class);
 
         } catch (ManagerAction.ActionException e) {
-            throw new ManagerAction.ActionException(new Exception("Error while loading Dublic Core annotation with URI " + uri, e));
+            throw new ManagerAction.ActionException(new Exception("Error while loading Dublic Core annotation with uri=(" + uri + ")", e));
         }
 
         try {
             if (annotationDC != null) {
                 dc = new DublinCore(annotationDC);
             } else {
-                throw new ManagerAction.ActionException(new Exception("Dublic Core annotation is null with URI " + uri));
+                throw new ManagerAction.ActionException(new Exception("Dublic Core annotation is null with uri=(" + uri + ")"));
             }
         } catch (ManagerAction.ActionException e) {
-            throw new ManagerAction.ActionException(new Exception("Error while loading Work for Dublic Core annotation with Dublin Core URI " + uri, e));
+            throw new ManagerAction.ActionException(new Exception("Error while loading Work for Dublic Core annotation with Dublin Core uri=(" + uri + ")", e));
         }
 
         return dc;

@@ -34,13 +34,30 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
     }
 
     public static BaseAnnotationText of(URI uri, String text) throws ManagerAction.ActionException {
-        log.info("BaseAnnotationText.of: text=(" + text + "), uri=(" + uri + ")");
-        //FIXME Aggiungere URI della annotazione
+        log.info("text=(" + ((text != null) ? text.length() : "null") + ") uri=(" + uri + ")");
         return new BaseAnnotationText(text, uri);
     }
 
+    public static BaseAnnotationText load(URI uri) throws ManagerAction.ActionException {
+
+        Annotation<TextContent, BaseAnnotation> baseAnnotation
+                = (Annotation<TextContent, BaseAnnotation>) resourceManager.loadAnnotation(uri, TextContent.class);
+
+        if (null != baseAnnotation) {
+            return new BaseAnnotationText(baseAnnotation);
+        } else {
+            throw new ManagerAction.ActionException(new NullPointerException("Base Annotation loaded is null!"));
+        }
+    }
+
+    private BaseAnnotationText(Annotation<TextContent, BaseAnnotation> baseAnnotation) {
+        this.annotation = baseAnnotation;
+    }
+
     private void init(String text, URI uri) throws ManagerAction.ActionException {
-        log.info("BaseAnnotationText init() resourceManager=(" + resourceManager + ")");
+
+        log.info("text=(" + ((text != null) ? text.length() : "null") + ") uri=(" + uri + ")");
+
         BaseAnnotationBuilder bab = new BaseAnnotationBuilder().URI(uri).text(text);
         annotation = resourceManager.createAnnotation(
                 BaseAnnotation.class, bab);
@@ -71,7 +88,7 @@ public final class BaseAnnotationText extends ADTAbstractAnnotation {
     }
 
     @Override
-    public boolean isRemovable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean isRemovable() throws ManagerAction.ActionException {
+        return !resourceManager.isTargetOfRelation(annotation);
     }
 }

@@ -70,7 +70,7 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
     public static Work of(Authors authors,
             PubblicationDate pubblicationDate,
             Title title, URI uri) throws ManagerAction.ActionException {
-        log.info("of=(" + authors + " " + pubblicationDate + " " + title + " " + uri + ")");
+        log.info("authors=(" + authors + "), pubblicationDate=(" + pubblicationDate + "), title=(" + title + "), uri=(" + uri + ")");
 
         return new Work("user0", authors.getValue().toArray(new String[0]), Date.from(new Date().toInstant()), "", pubblicationDate, title, uri);
     }
@@ -131,16 +131,19 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
 
     public <V extends Content> void addLoci(Loci loci) throws ManagerAction.ActionException {
 
-        for (Locus locus : loci.getValues()) {
-
-            if (locus instanceof TextLocus) {
-                addTextLocus(locus);
-            } else if (locus instanceof ImageLocus) {
-                addImageLocus(locus);
-            } else {
-                log.error("throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);");
-                throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);
+        if (null != loci) {
+            for (Locus locus : loci.getValues()) {
+                if (locus instanceof TextLocus) {
+                    addTextLocus(locus);
+                } else if (locus instanceof ImageLocus) {
+                    addImageLocus(locus);
+                } else {
+                    log.error("throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);");
+                    throw new TypeNotPresentException(locus.getClass().getCanonicalName(), null);
+                }
             }
+        } else {
+            log.warn("No locus to add");
         }
 
     }
@@ -182,7 +185,11 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
 
         Annotation annotationWork = resourceManager.loadAnnotation(uri, TextContent.class);
 
-        return new Work(annotationWork);
+        if (null != annotationWork) {
+            return new Work(annotationWork);
+        } else {
+            throw new ManagerAction.ActionException(new NullPointerException("Annotation work is null!"));
+        }
     }
 
     public URI getURI() { //la URI e' della annotation e non quella in annotation.data
@@ -193,7 +200,7 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
 
         List<Work> array = new ArrayList<>();
         List<Annotation<TextContent, WorkAnnotation>> loa = resourceManager.loadAllAnnotationData(TextContent.class, WorkAnnotation.class);
-        log.info("loadAll() result lenght " + loa.size());
+        log.info("Loaded " + loa.size() + " WorkAnnotation(s)");
 
         for (Annotation<TextContent, WorkAnnotation> ann : loa) {
             array.add(new Work(ann));
@@ -212,11 +219,9 @@ public final class Work extends ADTAbstractAnnotation implements CatalogItem {
     }
 
     @Override
-    public boolean isRemovable() throws ManagerAction.ActionException{
+    public boolean isRemovable() throws ManagerAction.ActionException {
 
-       return !resourceManager.isTargetOfRelation(annotation);
+        return !resourceManager.isTargetOfRelation(annotation);
     }
 
-    
-    
 }

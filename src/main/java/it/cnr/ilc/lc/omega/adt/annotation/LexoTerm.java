@@ -9,7 +9,6 @@ import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.LeftTextContext;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.RightTextContext;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.TextFragment;
 import it.cnr.ilc.lc.omega.adt.annotation.dto.lexo.UriSense;
-import it.cnr.ilc.lc.omega.annotation.BaseAnnotation;
 import it.cnr.ilc.lc.omega.annotation.LexoAnnotation;
 import it.cnr.ilc.lc.omega.annotation.LexoAnnotationBuilder;
 import it.cnr.ilc.lc.omega.core.ManagerAction;
@@ -42,6 +41,10 @@ public class LexoTerm extends ADTAbstractAnnotation {
         init(uri);
     }
 
+    private LexoTerm(Annotation<TextContent, LexoAnnotation> lexoTerm) {
+        this.annotation = lexoTerm;
+    }
+
     private void init(URI uri) throws ManagerAction.ActionException {
         log.info("LexoTerm init()");
 //        LexoAnnotationBuilder lab = new BaseAnnotationBuilder().URI(uri).text(text);
@@ -58,6 +61,14 @@ public class LexoTerm extends ADTAbstractAnnotation {
 
     public static LexoTerm of(URI uri) throws ManagerAction.ActionException {
         return new LexoTerm(uri);
+    }
+
+        public static LexoTerm load(URI uri) throws ManagerAction.ActionException {
+
+        Annotation<TextContent, LexoAnnotation> lexoTerm =
+                (Annotation<TextContent, LexoAnnotation>) resourceManager.loadAnnotation(uri, TextContent.class);
+
+        return new LexoTerm(lexoTerm);
     }
 
     /**

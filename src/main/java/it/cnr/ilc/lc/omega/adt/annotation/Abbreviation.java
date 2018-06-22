@@ -54,13 +54,33 @@ public final class Abbreviation extends ADTAbstractAnnotation {
         return new Abbreviation(expansion, uri, "");
     }
 
+    public static Abbreviation load(URI uri) throws ManagerAction.ActionException {
+
+        Annotation<TextContent, AbbreviationAnnotation> abbreviationAnnotation
+                = (Annotation<TextContent, AbbreviationAnnotation>) resourceManager.loadAnnotation(uri, TextContent.class);
+
+        if (null != abbreviationAnnotation) {
+            return new Abbreviation(abbreviationAnnotation);
+        } else {
+            throw new ManagerAction.ActionException(new NullPointerException("Abbreviation loaded is null!"));
+        }
+    }
+
     private <T extends Content, L extends Locus<T>> Abbreviation(String expansion, URI uri, String fragment) throws ManagerAction.ActionException {
 
         init(expansion, uri, fragment);
     }
 
+    private Abbreviation(Annotation<TextContent, AbbreviationAnnotation> abbreviationAnnotation) {
+        this.annotation = abbreviationAnnotation;
+    }
+
     private <T extends Content, L extends Locus<T>> void init(String expansion, URI uri, String fragment) throws ManagerAction.ActionException {
-        log.info("Abbreviation init() " + resourceManager);
+        
+        log.info("expansion=(" + ((expansion != null) ? expansion.length() : "null") + ")" +
+                "fragment=(" + ((fragment != null) ? fragment.length() : "null") + ")" +
+                " uri=(" + uri + ")");
+
         AbbreviationAnnotationBuilder ab = new AbbreviationAnnotationBuilder()
                 .abbrevationExpansion(expansion)
                 .abbrevation(fragment)
@@ -127,7 +147,7 @@ public final class Abbreviation extends ADTAbstractAnnotation {
     }
 
     @Override
-    protected void setAnnotation(Annotation<?,?> annotation) {
+    protected void setAnnotation(Annotation<?, ?> annotation) {
         this.annotation = (Annotation<TextContent, AbbreviationAnnotation>) annotation;
     }
 
